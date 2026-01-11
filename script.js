@@ -11,16 +11,13 @@ const PER_PAGE = 6;
 // Optional: set a GitHub token string here to avoid rate limits during development
 const GITHUB_TOKEN = null;
 
-/* ========== GISCUS (comments) ==========
-   To enable comments:
-   - Create a giscus config at https://giscus.app
-   - Fill these values (strings) below.
-*/
-const GISCUS_REPO = "OWNER/REPO";          // e.g. "yourname/yourrepo"
-const GISCUS_REPO_ID = "";                 // giscus repo id
-const GISCUS_CATEGORY = "";                // discussion category name
-const GISCUS_CATEGORY_ID = "";             // giscus category id
-const GISCUS_MAPPING = "pathname";         // mapping strategy (e.g., pathname, url, title)
+/* ========== GISCUS (comments) ========== */
+// Fill these if you want giscus comments
+const GISCUS_REPO = "";          // e.g. "yourname/yourrepo"
+const GISCUS_REPO_ID = "";
+const GISCUS_CATEGORY = "";
+const GISCUS_CATEGORY_ID = "";
+const GISCUS_MAPPING = "pathname";
 
 /* ========== STATE ========== */
 const state = {
@@ -57,13 +54,13 @@ async function renderHome() {
 
   appEl.innerHTML = `
     <section class="hero" role="banner">
-      <div class="avatar" id="heroAvatar">A</div>
+      <div class="avatar" id="heroAvatar"><img src="https://raw.githubusercontent.com/TheRealDuckers/cdn/refs/heads/main/OIG3.4Ejr4MY.jpg"/></div>
       <div class="meta">
-        <h1 id="heroTitle">Hi — I write about code, design and small experiments</h1>
-        <div class="bio" id="heroBio">Designer & developer • building tiny useful things</div>
+        <h1 id="heroTitle">Hi, welcome to my blog!</h1>
+        <div class="bio" id="heroBio">the best and funniest dev blog out there... probably.</div>
       </div>
       <div class="actions">
-        <a class="btn primary" href="#/posts">Browse Posts</a>
+        <a class="btn primary" style="text-decoration: none;" href="#/posts">Browse All Posts</a>
       </div>
     </section>
 
@@ -80,12 +77,9 @@ async function renderHome() {
       `).join("")}
     </div>
   `;
-  // optional: set avatar image by URL
-  // const av = document.getElementById('heroAvatar'); av.style.backgroundImage = 'url(https://...jpg)'; av.style.backgroundSize='cover';
 }
 
 async function renderPosts() {
-  // fetch labels once
   if (!state.labels.length) {
     try { state.labels = await apiFetch("/labels"); } catch (e) { state.labels = []; }
   }
@@ -137,7 +131,6 @@ async function renderPosts() {
     </div>
   `;
 
-  // wire controls
   document.getElementById("searchInput").addEventListener("input", e => {
     state.search = e.target.value;
     renderPosts();
@@ -178,23 +171,16 @@ async function renderPost(number) {
     </div>
   `;
 
-  // render markdown
   const md = post.body || "";
   document.getElementById("postBody").innerHTML = marked.parse(md);
 
-  // inject giscus if configured
   injectGiscus();
 }
 
 /* ========== COMMENTS (giscus) ========== */
 function injectGiscus() {
-  // Only inject if giscus config is present
-  if (!GISCUS_REPO || !GISCUS_REPO_ID || !GISCUS_CATEGORY || !GISCUS_CATEGORY_ID) {
-    // giscus not configured; skip
-    return;
-  }
+  if (!GISCUS_REPO || !GISCUS_REPO_ID || !GISCUS_CATEGORY || !GISCUS_CATEGORY_ID) return;
 
-  // remove existing if present
   const container = document.getElementById("comments");
   container.innerHTML = "";
 
@@ -216,12 +202,11 @@ function injectGiscus() {
 
 /* ========== DATA ========== */
 async function fetchIssues(page = 1, label = null) {
-  // newest first: sort=created&direction=desc
-  let path = `/issues?sort=created&direction=desc&page=${page}&per_page=${PER_PAGE}`;
+  // newest first and only issues created by the repo owner
+  let path = `/issues?sort=created&direction=desc&page=${page}&per_page=${PER_PAGE}&creator=${encodeURIComponent(OWNER)}`;
   if (label) path += `&labels=${encodeURIComponent(label)}`;
   try {
     const data = await apiFetch(path);
-    // filter out PRs (they appear in issues endpoint)
     return Array.isArray(data) ? data.filter(i => !i.pull_request) : [];
   } catch (e) {
     console.error("fetchIssues error", e);
@@ -248,7 +233,6 @@ if (localStorage.dark === "true") document.body.classList.add("dark");
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   localStorage.dark = document.body.classList.contains("dark");
-  // update giscus theme if present
   const iframe = document.querySelector("iframe.giscus-frame");
   if (iframe && iframe.contentWindow) {
     const theme = document.body.classList.contains("dark") ? "dark" : "light";
@@ -259,4 +243,3 @@ themeToggle.addEventListener("click", () => {
 /* ========== INIT ========== */
 window.addEventListener("hashchange", router);
 router();
-
