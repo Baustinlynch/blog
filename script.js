@@ -1,10 +1,4 @@
-/* app.js
-   - Single-page app (hash routing)
-   - Fetches GitHub issues (newest first)
-   - Search (page-level), label filtering, pagination
-   - Dark mode persisted in localStorage
-   - Injects giscus comments on post pages (configure placeholders)
-*/
+
 
 /* ========== CONFIG ========== */
 // Replace these with your repo
@@ -265,3 +259,4 @@ themeToggle.addEventListener("click", () => {
 /* ========== INIT ========== */
 window.addEventListener("hashchange", router);
 router();
+
