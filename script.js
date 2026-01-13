@@ -2,8 +2,8 @@
 
 /* ========== CONFIG ========== */
 // Replace these with your repo
-const OWNER = "TheRealDuckers";
-const REPO  = "blog.duckers.dev";
+const OWNER = "Baustinlynch";
+const REPO  = "blog";
 
 // Pagination: issues per page
 const PER_PAGE = 6;
@@ -244,3 +244,4 @@ themeToggle.addEventListener("click", () => {
 /* ========== INIT ========== */
 window.addEventListener("hashchange", router);
 router();
+
