@@ -1,6 +1,3 @@
-So, basically, this grabs issues and displays them as blog posts. no backend, no tokens, just pure posts. (although you can add tokens if you want)
+its my blog
 
-to use:
-
-<li>Fork and Replace YOUR_GITHUB_USERNAME and YOUR_REPO_NAME in the script with your repo.
-<li>Optionally set GITHUB_TOKEN in the file for higher rate limits.
+forked from https://github.com/TheRealDuckers/blog.duckers.dev 
